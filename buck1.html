@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Couple Memory Vault</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff0f5;
+      background: #fdf6e3 url("image6.jpeg");
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .form-container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input, textarea, select, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: #ff69b4;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #ff1493;
+    }
+
+    .memory {
+      background: white;
+      margin: 20px auto;
+      padding: 15px;
+      border-radius: 10px;
+      max-width: 500px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+
+    .memory img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    .private {
+      border-left: 5px solid red;
+    }
+
+    .public {
+      border-left: 5px solid green;
+    }
+  </style>
+</head>
+<body>
+
+<h1>💕 Couple Memory Vault</h1>
+
+<div class="form-container">
+  <input type="file" id="photo" accept="image/*">
+  
+  <textarea id="note" placeholder="Write a short note..."></textarea>
+  
+  <textarea id="feeling" placeholder="How did you feel?"></textarea>
+  
+  <select id="visibility">
+    <option value="public">Public</option>
+    <option value="private">Private</option>
+  </select>
+  
+  <button onclick="saveMemory()">Save Memory</button>
+</div>
+
+<div id="memories"></div>
+
+<script>
+  function saveMemory() {
+    const photoInput = document.getElementById("photo");
+    const note = document.getElementById("note").value;
+    const feeling = document.getElementById("feeling").value;
+    const visibility = document.getElementById("visibility").value;
+
+    if (!note || !feeling) {
+      alert("Please fill in all fields!");
+      return;
+    }
+
+    const memoryDiv = document.createElement("div");
+    memoryDiv.classList.add("memory", visibility);
+
+    const notePara = document.createElement("p");
+    notePara.innerHTML = "<strong>Note:</strong> " + note;
+
+    const feelingPara = document.createElement("p");
+    feelingPara.innerHTML = "<strong>How we felt:</strong> " + feeling;
+
+    const visibilityPara = document.createElement("p");
+    visibilityPara.innerHTML = "<strong>Visibility:</strong> " + visibility;
+
+    memoryDiv.appendChild(notePara);
+    memoryDiv.appendChild(feelingPara);
+    memoryDiv.appendChild(visibilityPara);
+
+    if (photoInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        memoryDiv.appendChild(img);
+      };
+      reader.readAsDataURL(photoInput.files[0]);
+    }
+
+    document.getElementById("memories").appendChild(memoryDiv);
+
+    // Clear form
+    document.getElementById("note").value = "";
+    document.getElementById("feeling").value = "";
+    document.getElementById("photo").value = "";
+  }
+</script>
+
+</body>
+</html>

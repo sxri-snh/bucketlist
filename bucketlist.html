@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>💕  Travel Bucket List 🗺️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background: linear-gradient(to right, #ffdde1, #ee9ca7); 
+      background: #fdf6e3 url("image6.jpeg");
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem;
+      color: white;
+      background: rgba(255, 105, 180, 0.5);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: 'Cursive', sans-serif;
+    }
+
+    .container {
+      max-width: 750px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    }
+
+    .input-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .input-section input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .input-section button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: #ff6b81;
+      color: white;
+      font-weight: bold;
+    }
+
+    .input-section button:hover {
+      background: #ff4757;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      border-radius: 15px;
+      margin-bottom: 10px;
+      background: #ffe6f0;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    li.completed span.title {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    li img {
+      max-width: 100%;
+      border-radius: 12px;
+      margin: 8px 0;
+    }
+
+    iframe {
+      width: 100%;
+      height: 200px;
+      border: none;
+      border-radius: 12px;
+      margin: 8px 0;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .delete-btn {
+      background: #ff6b6b;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: white;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>💕 BEAR&SHABS Travel Bucket List 🗺️</h1>
+  <p>Dream together, explore together</p>
+</header>
+
+<div class="container">
+  <div class="input-section">
+    <input type="text" id="destinationInput" placeholder="Add a destination...">
+    <input type="text" id="photoInput" placeholder="Photo URL (optional)">
+    <input type="text" id="mapInput" placeholder="Google Maps URL (optional)">
+    <button onclick="addDestination()">Add</button>
+  </div>
+
+  <ul id="bucketList"></ul>
+</div>
+
+<footer>
+  Made with ❤️ for us, to explore the world together
+</footer>
+
+<a href="buck1.html">
+    <button>Open Memory Vault 💕</button>
+  </a>
+  <a href="buck2.html">
+    <button>Open Memory calendar 💕</button>
+  </a>
+
+<script>
+  const input = document.getElementById("destinationInput");
+  const photoInput = document.getElementById("photoInput");
+  const mapInput = document.getElementById("mapInput");
+  const list = document.getElementById("bucketList");
+
+  // Load saved list
+  window.onload = function() {
+    const saved = JSON.parse(localStorage.getItem("bucketList")) || [];
+    saved.forEach(item => createItem(item));
+  };
+
+  function addDestination() {
+    if (input.value.trim() === "") return;
+    const item = {
+      text: input.value,
+      photo: photoInput.value,
+      map: mapInput.value,
+      completed: false
+    };
+    createItem(item);
+    saveList();
+    input.value = "";
+    photoInput.value = "";
+    mapInput.value = "";
+  }
+
+  function createItem(item) {
+    const li = document.createElement("li");
+    if (item.completed) li.classList.add("completed");
+
+    const row = document.createElement("div");
+    row.className = "row";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = item.completed;
+    checkbox.onchange = function() {
+      li.classList.toggle("completed");
+      item.completed = checkbox.checked;
+      saveList();
+    };
+
+    const span = document.createElement("span");
+    span.textContent = item.text;
+    span.className = "title";
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.className = "delete-btn";
+    deleteBtn.onclick = function() {
+      li.remove();
+      saveList();
+    };
+
+    row.appendChild(checkbox);
+    row.appendChild(span);
+    row.appendChild(deleteBtn);
+    li.appendChild(row);
+
+    if(item.photo) {
+      const img = document.createElement("img");
+      img.src = item.photo;
+      li.appendChild(img);
+    }
+
+    if(item.map) {
+      const iframe = document.createElement("iframe");
+      iframe.src = item.map.replace("/place/", "/embed/place/");
+      li.appendChild(iframe);
+    }
+
+    list.appendChild(li);
+  }
+
+  function saveList() {
+    const items = [];
+    document.querySelectorAll("#bucketList li").forEach(li => {
+      const checkbox = li.querySelector("input[type=checkbox]");
+      const span = li.querySelector("span.title");
+      const img = li.querySelector("img");
+      const iframe = li.querySelector("iframe");
+
+      items.push({
+        text: span.textContent,
+        photo: img ? img.src : "",
+        map: iframe ? iframe.src.replace("/embed/place/", "/place/") : "",
+        completed: li.classList.contains("completed")
+      });
+    });
+    localStorage.setItem("bucketList", JSON.stringify(items));
+  }
+</script>
+
+</body>
+</html>

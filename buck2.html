@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Couple Memory Calendar 💕</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff0f5;
+      background: #fdf6e3 url("image6.jpeg");
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    .form-container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input, textarea, select, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: #ff69b4;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #ff1493;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 600px;
+      margin: 30px auto 10px;
+    }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    .day-name {
+      font-weight: bold;
+    }
+
+    .day {
+      background: white;
+      min-height: 80px;
+      border-radius: 8px;
+      padding: 5px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .day img {
+      width: 100%;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 5px;
+      margin-top: 3px;
+    }
+
+    .popup {
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      display: none;
+      max-width: 400px;
+    }
+
+    .popup img {
+      max-width: 100%;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>💕 Our Memory Calendar</h1>
+
+<div class="form-container">
+  <input type="file" id="photo" accept="image/*">
+  <textarea id="note" placeholder="Write a short note..."></textarea>
+  <textarea id="feeling" placeholder="How did you feel?"></textarea>
+  <input type="date" id="date">
+  <select id="visibility">
+    <option value="public">Public</option>
+    <option value="private">Private</option>
+  </select>
+  <button onclick="saveMemory()">Save Memory</button>
+</div>
+
+<div class="calendar-header">
+  <button onclick="changeMonth(-1)">⬅</button>
+  <h2 id="monthYear"></h2>
+  <button onclick="changeMonth(1)">➡</button>
+</div>
+
+<div class="calendar" id="calendar"></div>
+
+<div id="popup" class="popup"></div>
+
+<script>
+  const calendar = document.getElementById("calendar");
+  const monthYear = document.getElementById("monthYear");
+  const popup = document.getElementById("popup");
+
+  let currentDate = new Date();
+  let memories = {};
+
+  function renderCalendar() {
+    calendar.innerHTML = "";
+
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+
+    monthYear.innerText = currentDate.toLocaleString("default", {
+      month: "long",
+      year: "numeric"
+    });
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    const dayNames = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+    dayNames.forEach(day => {
+      const div = document.createElement("div");
+      div.classList.add("day-name");
+      div.innerText = day;
+      calendar.appendChild(div);
+    });
+
+    for (let i = 0; i < firstDay; i++) {
+      calendar.appendChild(document.createElement("div"));
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateKey = `${year}-${month+1}-${day}`;
+      const dayDiv = document.createElement("div");
+      dayDiv.classList.add("day");
+      dayDiv.innerHTML = `<strong>${day}</strong>`;
+
+      if (memories[dateKey]) {
+        const img = document.createElement("img");
+        img.src = memories[dateKey].image;
+        dayDiv.appendChild(img);
+      }
+
+      dayDiv.onclick = () => openMemory(dateKey);
+      calendar.appendChild(dayDiv);
+    }
+  }
+
+  function saveMemory() {
+    const photoInput = document.getElementById("photo");
+    const note = document.getElementById("note").value;
+    const feeling = document.getElementById("feeling").value;
+    const date = document.getElementById("date").value;
+
+    if (!note || !feeling || !date || !photoInput.files[0]) {
+      alert("Fill all fields!");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      memories[date] = {
+        note,
+        feeling,
+        image: e.target.result
+      };
+      renderCalendar();
+    };
+
+    reader.readAsDataURL(photoInput.files[0]);
+  }
+
+  function openMemory(dateKey) {
+    if (!memories[dateKey]) return;
+
+    popup.innerHTML = `
+      <h3>${dateKey}</h3>
+      <p><strong>Note:</strong> ${memories[dateKey].note}</p>
+      <p><strong>How we felt:</strong> ${memories[dateKey].feeling}</p>
+      <img src="${memories[dateKey].image}">
+      <br><br>
+      <button onclick="popup.style.display='none'">Close</button>
+    `;
+
+    popup.style.display = "block";
+  }
+
+  function changeMonth(direction) {
+    currentDate.setMonth(currentDate.getMonth() + direction);
+    renderCalendar();
+  }
+
+  renderCalendar();
+</script>
+
+</body>
+</html>
