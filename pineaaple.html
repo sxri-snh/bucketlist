@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>💕 Bear & Shabs 💕</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Patrick+Hand&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Patrick Hand', cursive;
+      background: #f6efe7;
+      padding: 30px;
+      text-align: center;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+    }
+
+    .paper {
+      background: white;
+      padding: 30px;
+      max-width: 600px;
+      margin: 40px auto;
+      border-radius: 15px;
+      box-shadow: 
+        0 10px 25px rgba(0,0,0,0.2),
+        0 0 0 10px #f3e5d8,
+        0 0 0 20px #e8d8c3;
+    }
+
+    .counter {
+      font-size: 20px;
+      margin: 20px 0;
+    }
+
+    .mixtape {
+      margin-top: 30px;
+    }
+
+    iframe {
+      width: 100%;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      background: #d88c9a;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #c06c84;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>💕 Bear & Shabs 💕</h1>
+
+  <div class="paper">
+    
+    <div class="counter" id="relationshipCounter"></div>
+
+    <div class="mixtape">
+      <h2>🎶 Bear Mixtape</h2>
+      <!-- Replace with your Spotify embed link -->
+      <iframe src="https://open.spotify.com/embed/playlist/YOUR_PLAYLIST_ID"
+              height="152"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+      </iframe>
+    </div>
+
+    <a href="bucketlist.html">
+      <button>🗺️ Our Travel Bucket List</button>
+    </a>
+
+    <a href="buck1.html">
+      <button>📸 Memory Vault</button>
+    </a>
+
+    <a href="buck2.html">
+      <button>📅 Memory Calendar</button>
+    </a>
+
+  </div>
+
+<script>
+  function updateCounter() {
+    const startDate = new Date("2024-03-14"); // CHANGE THIS
+    const today = new Date();
+
+    const diffTime = today - startDate;
+    const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    document.getElementById("relationshipCounter").innerHTML =
+      `💕 We've been together for <strong>${days}</strong> days 💕`;
+  }
+
+  updateCounter();
+</script>
+
+</body>
+</html>
