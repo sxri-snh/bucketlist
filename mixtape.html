@@ -1,1 +1,192 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>bear's mixtape ♡</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Courier New', monospace;
+  background: url("wallpaper.jpg") no-repeat center center fixed;
+background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  display: flex;
+  width: 95%;
+  max-width: 900px;
+  min-height: 80vh;
+  background: rgba(255, 255, 255, 0.6);
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+  border-radius: 25px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+  overflow: hidden;
+}
+
+  
+.sidebar {
+  width: 250px;
+  background: rgba(255, 255, 255, 0.5);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+  padding: 25px;
+  overflow-y: auto;
+}
+
+.sidebar h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.track {
+  padding: 10px;
+  margin-bottom: 8px;
+  background: white;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.track:hover {
+  background: #ffd6e8;
+}
+
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.image {
+  width: 300px;
+  border-radius: 20px;
+  margin-bottom: 25px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 20px;
+}
+
+audio {
+  width: 60%;
+}
+
+  @media (max-width: 768px) {
+
+  body {
+    align-items: flex-start;
+    padding: 20px 0;
+  }
+
+  .container {
+    flex-direction: column;
+    border-radius: 20px;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+  }
+
+  .main {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .image {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  border-radius: 20px;
+  }
+
+  audio {
+    width: 90%;
+  }
+}
+  
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="sidebar">
+    <h2>bear's mixtape ♡</h2>
+
+    <div class="track" onclick="playSong(0)">01 — track one</div>
+    <div class="track" onclick="playSong(1)">02 — track two</div>
+    <div class="track" onclick="playSong(2)">03 — track three</div>
+    <div class="track" onclick="playSong(3)">04 — track four</div>
+    <div class="track" onclick="playSong(4)">05 — track five</div>
+    <div class="track" onclick="playSong(5)">06 — track six</div>
+    <div class="track" onclick="playSong(6)">07 — track seven</div>
+    <div class="track" onclick="playSong(7)">08 — track eight</div>
+    <div class="track" onclick="playSong(8)">09 — track nine</div>
+    <div class="track" onclick="playSong(9)">10 — track ten</div>
+  </div>
+
+  <div class="main">
+    <img src="mixtape.jpg" class="album-image">
+    <audio id="player" controls></audio>
+  </div>
+
+</div>
+
+<script>
+const songs = [
+  "song1.mp3",
+  "song2.mp3",
+  "song3.mp3",
+  "song4.mp3",
+  "song5.mp3",
+  "song6.mp3",
+  "song7.mp3",
+  "song8.mp3",
+  "song9.mp3",
+  "song10.mp3"
+];
+
+let currentSong = 0;
+const player = document.getElementById("player");
+
+// Load first song automatically
+window.addEventListener("load", () => {
+  player.src = songs[0];
+  player.play().catch(() => {
+    console.log("Autoplay blocked until user interaction.");
+  });
+});
+
+// When a track button is clicked
+function playSong(index) {
+  currentSong = index;
+  player.src = songs[currentSong];
+  player.play();
+}
+
+// Auto play next song when one ends
+player.addEventListener("ended", () => {
+  currentSong++;
+  if (currentSong < songs.length) {
+    player.src = songs[currentSong];
+    player.play();
+  }
+});
+</script>
+
+</body>
+</html>
+
