@@ -42,6 +42,57 @@
       margin-top: 30px;
     }
 
+    .timeline-input {
+  margin: 20px 0;
+}
+
+.timeline-input input {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.timeline {
+  position: relative;
+  margin-top: 40px;
+  padding-left: 20px;
+  border-left: 3px solid #d88c9a;
+}
+
+.timeline-event {
+  background: white;
+  padding: 15px;
+  margin-bottom: 25px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+  position: relative;
+  transform: rotate(-1deg);
+}
+
+.timeline-event:nth-child(even) {
+  transform: rotate(1deg);
+}
+
+.timeline-event::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  background: #d88c9a;
+  border-radius: 50%;
+  position: absolute;
+  left: -29px;
+  top: 20px;
+}
+
+.timeline-event img {
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 10px;
+}
+
     iframe {
       width: 100%;
       border-radius: 12px;
@@ -75,7 +126,17 @@
   <div class="paper">
     
     <div class="counter" id="relationshipCounter"></div>
+<h2>📖 Our Timeline</h2>
 
+<div class="timeline-input">
+  <input type="date" id="timelineDate">
+  <input type="text" id="timelineText" placeholder="What happened?">
+  <input type="file" id="timelineImage" accept="image/*">
+  <button onclick="addTimelineEvent()">Add Memory</button>
+</div>
+
+<div id="timelineContainer"></div>
+    
     <div class="mixtape">
       <h2>🎶 Bear Mixtape</h2>
       <!-- Replace with your Spotify embed link -->
@@ -116,6 +177,61 @@
   }
 
   updateCounter();
+  const timelineContainer = document.getElementById("timelineContainer");
+
+window.onload = function() {
+  updateCounter();
+  loadTimeline();
+};
+
+function addTimelineEvent() {
+  const date = document.getElementById("timelineDate").value;
+  const text = document.getElementById("timelineText").value;
+  const imageInput = document.getElementById("timelineImage");
+
+  if (!date || !text || !imageInput.files[0]) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    const event = {
+      date,
+      text,
+      image: e.target.result
+    };
+
+    const events = JSON.parse(localStorage.getItem("timeline")) || [];
+    events.push(event);
+
+    localStorage.setItem("timeline", JSON.stringify(events));
+    renderTimeline();
+  };
+
+  reader.readAsDataURL(imageInput.files[0]);
+}
+
+function loadTimeline() {
+  renderTimeline();
+}
+
+function renderTimeline() {
+  const events = JSON.parse(localStorage.getItem("timeline")) || [];
+  timelineContainer.innerHTML = '<div class="timeline"></div>';
+  const timeline = timelineContainer.querySelector(".timeline");
+
+  events.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+  events.forEach(event => {
+    const div = document.createElement("div");
+    div.className = "timeline-event";
+    div.innerHTML = `
+      <strong>${event.date}</strong>
+      <p>${event.text}</p>
+      <img src="${event.image}">
+    `;
+    timeline.appendChild(div);
+  });
+}
 </script>
 
 </body>
